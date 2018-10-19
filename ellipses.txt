@@ -1,0 +1,9 @@
+RK 30 8e-5 100 ellipses2.txt
+RK 30 8e-5 100 ellipses3.txt
+RK 30 8e-5 100 ellipses4.txt
+RK 30 8e-5 100 ellipses5.txt
+RK 30 8e-5 100 ellipses6.txt
+RK 30 8e-5 100 ellipses7.txt
+RK 30 8e-5 100 ellipses8.txt
+RK 30 8e-5 100 ellipses9.txt
+RK 30 8e-5 100 ellipses10.txt

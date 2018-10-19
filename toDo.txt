@@ -1,0 +1,26 @@
+Plots te maken:
+
+BURRAU
+	zowel met RK als met GBS
+2-BODY
+	eens 2-3 & eens  10000 orbits, GBS en RK, errors op dezelfde plot
+	
+CHOREOGRAHPHIES	
+
+	paar mooie kiezen om filmpjes van te maken
+
+VERSCHILLENDE N
+
+	random verdeling van n=2...10
+	execution time (N) plot
+
+VARIATIE TIMESTEP
+
+	Energy error en #driver-evaluaties ve bepaald systeem (twobody bv) in functie van de timestep, RK en GBS
+	
+OOK NOG
+
+voor RK: variabele timestep uit de code smijten, effect bestuderen (zie opgave)
+
+	
+	

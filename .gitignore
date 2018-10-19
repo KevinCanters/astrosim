@@ -1,0 +1,10 @@
+*.swp
+*.o
+*.png
+*.mp4
+.DS_Store
+simulation
+__pycache__/
+latex/.texpadtmp/*
+latex/_minted-presentatie
+output/*

@@ -1,0 +1,319 @@
+\documentclass{beamer}
+%\usetheme{Frankfurt}
+%\usecolortheme{dove}
+\usetheme[faculty=we]{UniversiteitGent}
+\useinnertheme{circles}
+\setbeamertemplate{navigation symbols}{}
+
+\usepackage{media9}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+%\usepackage{cmbright}
+\usepackage{lmodern}
+\usepackage[outputdir=.texpadtmp]{minted}
+\usepackage{siunitx}
+
+\usepackage{silence}
+\WarningFilter{latexfont}{Font shape}
+\WarningFilter{latexfont}{Some font}
+
+\usepackage{remreset}% tiny package containing just the \@removefromreset command
+\makeatletter
+\@removefromreset{subsection}{section}
+\makeatother
+\setcounter{subsection}{1}
+
+\DeclareRobustCommand{\cpluspluslogo}{\hbox{C\hspace{-0.15ex}\protect\raisebox{0.5ex}{\protect\scalebox{0.67}{++}}}}
+
+\title{\LARGE\textbf{N-body simulations}}
+\author{\texorpdfstring{Kevin Canters, Kwinten De Backer,\\ Tamas Gommers en Johannes Weytjens}{Kevin Canters, Kwinten De Backer, Tamas Gommers en Johannes Weytjens}}
+\date{15 december, 2015}
+\begin{document}
+
+\begin{frame}
+\maketitle
+\end{frame}
+
+\section{\texorpdfstring{\cpluspluslogo}{C++} code}
+\begin{frame}
+\frametitle{\thesection. \insertsection}
+\framesubtitle{General principles}
+\begin{itemize}[<+->]
+	\item Maximize readability by hiding \texttt{for} loops
+	\item Optimize for speed keeping the first rule in mind
+	\item Gragg-Bulirsch-Stür should adjust timestep if necessary
+	\item Provide a nice user interface
+\end{itemize}\end{frame}
+
+\begin{frame}
+\frametitle{\thesection. \insertsection}
+\framesubtitle{Optimalizations}
+\begin{itemize}
+	\item<1-> Pass classes by reference if it doesn't obstruct readability
+	\item<1-> \texttt{valarray} and \texttt{array} instead of \texttt{vector}
+	\begin{itemize}
+		\item<2-> speed record: Burrau problem with RK in \alert{\SI{0.2}{\second}}
+	\end{itemize}
+	\item<3-> \texttt{[]} operator instead of \texttt{.at()}
+	\item<3-> \texttt{size\textunderscore t valarray.size()}
+	\item<3-> Loops over all possible pairs are symmetric 
+\end{itemize}
+
+	
+\end{frame}
+
+%\begin{frame}[fragile]
+%\begin{minted}{cpp}
+%valarray<Vec> getPositions(const valarray<Star>& stars)
+%{
+%    size_t size = stars.size();
+%    valarray<Vec> positions(size);
+%
+%    for(size_t i = 0; i < size; ++i)
+%    {
+%        positions[i] = stars[i].position();
+%    }
+%    return positions;
+%}	
+%\end{minted}%\end{frame}
+%
+%\begin{frame}[fragile]
+%\begin{minted}{cpp}
+%valarray<Star> modifiedMidpoint(valarray<Star> stars, ...)
+%{
+%    valarray<Vec> xi, xi_min, xi_plus;
+%    valarray<Vec> vi, vi_min, vi_plus;
+%    valarray<double> masses = getMasses(stars);
+%    
+%    for(size_t i = 0; i < n - 1; ++i) 
+%    {
+%        xi_plus = xi_min + 2 * h * vi; 
+%        vi_plus = vi_min + 2 * h * driver(xi, masses);
+%        xi_min = xi;
+%        vi_min = vi;
+%        xi = xi_plus;
+%        vi = vi_plus;
+%    }
+%    updateStars(...);
+%}
+%\end{minted}%\end{frame}
+
+
+\begin{frame}
+\includegraphics[width=\textwidth]{ui.png}
+\end{frame}
+
+\section{Are the integrators correct?}
+\begin{frame}
+\frametitle{\thesection. \insertsection}
+\begin{itemize}
+	\item Correct $h$ scaling
+	\item Test with analytic solvable differential equations
+\end{itemize}	
+\end{frame}
+
+\begin{frame}
+\centering 
+Two-body problem with RK timestep $10^{-4}$ and $10^{-5}$
+\vspace{-0.25cm}
+\begin{figure}
+	\input{plots/errors_RK}	
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\centering
+Harmonic oscillator with GBS and timestep \num{e-2}
+\vspace{-1cm}
+\begin{figure}
+	\input{plots/harmonic_GBS}		
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\centering
+Harmonic oscillator with RK and timestep \num{e-2}
+\vspace{-1cm}
+\begin{figure}
+	\input{plots/harmonic_RK}		
+\end{figure}
+\end{frame}
+
+\section{Scaling behaviour}
+\begin{frame}
+\frametitle{\thesection. \insertsection}
+\begin{itemize}
+	\item All functions that loop over all the bodies are symmetric
+	\item Profiling shows most time is spent on calculating gravity
+	\item Expected scaling is $\dfrac{N(N-1)}{2} + C$
+	\begin{itemize}
+		\item constant term $C$ is mainly (valarray) constructors
+	\end{itemize}
+\end{itemize}	
+\end{frame}
+
+\begin{frame}
+\centering
+\begin{figure}
+\centering
+\input{plots/scalingellipses}	
+\end{figure}
+\end{frame}
+
+\section{\texorpdfstring{$\Delta E$ and driver evaluations}{Delta E and driver evaluations}}
+
+\begin{frame}
+\frametitle{\thesection. \insertsection}
+\begin{itemize}
+	\item $\Delta E$ is a good measure for accuracy
+	\item Number of driver evaluations is lineair for Runge-Kutta 4
+	\begin{itemize}
+		\item $\text{driver evaluations} = 4\cdot\dfrac{\text{unit time}}{\text{timestep}}$
+	\end{itemize}
+	\item Number of driver evaluations for GBS depends on convergence criterium
+	\item Only lower bound can be set for systems with close encounters
+\end{itemize}	
+\end{frame}
+
+\begin{frame}
+\centering
+Supereight choreography
+\begin{figure}
+	\input{plots/supereight}
+\end{figure}	
+\end{frame}
+
+
+\begin{frame}
+\centering
+$\Delta E$ as function of the integration time
+\vspace{-0.25cm}
+\begin{figure}
+	\centering
+	\input{plots/deltae}	
+\end{figure}
+\end{frame}
+
+
+\begin{frame}
+\centering
+Number of driver evaluations as function of the timestep
+\begin{figure}
+	\centering
+	\input{plots/drivereval}	
+\end{figure}
+\end{frame}
+
+\section{Long term accuracy}
+\begin{frame}
+\frametitle{\thesection. \insertsection}
+\begin{itemize}
+	\item Simple two-body system
+	\item Period \num{0.06} unit time
+	\item Motion of sun eliminated by giving it negative initial speed
+	\item Runge-Kutta with timestep \num{8e-5}
+	\item Gragg-Bulirsch-Stür with timestep \num{1e-3}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\centering
+10 periods of a simple two-body system
+\begin{figure}
+	\input{plots/comp_short}	
+\end{figure}
+\end{frame}
+
+
+\begin{frame}
+\centering
+2500 periods of a simple two-body system
+\begin{figure}
+	\input{plots/comp_long}	
+\end{figure}	
+\end{frame}
+
+
+\section{Adaptive timestep}
+\begin{frame}
+\frametitle{\thesection. \insertsection}
+\centering
+\vspace{-0.3cm}
+Burrau problem with \emph{no} adaptive timestep
+\includemedia[
+  activate=onclick,
+  width=10cm,
+  height=6.5cm,
+  keepaspectratio,
+  addresource=movies/burraunon.mp4,
+  flashvars={source=movies/burraunon.mp4&autoPlay=false&scaleMode=none&loop=false}  
+]{\includegraphics{rkwit}}{VPlayer.swf}
+\end{frame}
+
+\begin{frame}
+\centering
+Burrau problem \emph{with} adaptive timestep
+\includemedia[
+  activate=onclick,
+  width=10cm,
+  height=6.5cm,
+  keepaspectratio,
+  addresource=movies/burrauadap.mp4,
+  flashvars={source=movies/burrauadap.mp4&autoPlay=false&scaleMode=none&loop=false}  
+]{\includegraphics{rkadapwit}}{VPlayer.swf}	
+\end{frame}
+
+
+\section{Choreographies}
+\begin{frame}
+\frametitle{\thesection. \insertsection}
+\vspace{-0.3cm}
+\centering
+Three-body choreographies with RK timestep \num{e-4}
+\begin{figure}
+	\input{plots/choreographies}	
+\end{figure}
+\end{frame}
+
+%\begin{frame}
+%\vspace{-0.5cm}
+%\centering
+%\includemedia[
+%  activate=onclick,
+%  width=9cm,
+%  height=6cm,
+%  keepaspectratio,
+%  addresource=movies/burrau.mp4,
+%  flashvars={source=movies/burrau.mp4&autoPlay=false&scaleMode=none&loop=false}  
+%]{\includegraphics{desk}}{VPlayer.swf}	
+%\end{frame}
+
+
+\begin{frame}
+\centering
+\vspace{-0.5cm}
+\includemedia[
+  activate=onclick,
+  width=12.5cm,
+  height=7cm,
+  keepaspectratio,
+  addresource=movies/yin4.mp4,
+  flashvars={source=movies/yin4.mp4&autoPlay=false&scaleMode=none&loop=false}  
+]{\includegraphics{yinyang}}{VPlayer.swf}
+\end{frame}
+	
+	
+\begin{frame}
+\centering
+\includemedia[
+  activate=onclick,
+  width=11cm,
+  height=7.5cm,
+  keepaspectratio,
+  addresource=movies/butterfly.mp4,
+  flashvars={source=movies/butterfly.mp4&autoPlay=false&scaleMode=none&loop=false}  
+]{\includegraphics{butterfly}}{VPlayer.swf}	
+\end{frame}
+
+\end{document}

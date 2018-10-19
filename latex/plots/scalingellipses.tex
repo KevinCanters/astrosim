@@ -1,0 +1,122 @@
+% GNUPLOT: LaTeX picture with Postscript
+\begingroup
+  \makeatletter
+  \providecommand\color[2][]{%
+    \GenericError{(gnuplot) \space\space\space\@spaces}{%
+      Package color not loaded in conjunction with
+      terminal option `colourtext'%
+    }{See the gnuplot documentation for explanation.%
+    }{Either use 'blacktext' in gnuplot or load the package
+      color.sty in LaTeX.}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\includegraphics[2][]{%
+    \GenericError{(gnuplot) \space\space\space\@spaces}{%
+      Package graphicx or graphics not loaded%
+    }{See the gnuplot documentation for explanation.%
+    }{The gnuplot epslatex terminal needs graphicx.sty or graphics.sty.}%
+    \renewcommand\includegraphics[2][]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \@ifundefined{ifGPcolor}{%
+    \newif\ifGPcolor
+    \GPcolorfalse
+  }{}%
+  \@ifundefined{ifGPblacktext}{%
+    \newif\ifGPblacktext
+    \GPblacktexttrue
+  }{}%
+  % define a \g@addto@macro without @ in the name:
+  \let\gplgaddtomacro\g@addto@macro
+  % define empty templates for all commands taking text:
+  \gdef\gplbacktext{}%
+  \gdef\gplfronttext{}%
+  \makeatother
+  \ifGPblacktext
+    % no textcolor at all
+    \def\colorrgb#1{}%
+    \def\colorgray#1{}%
+  \else
+    % gray or color?
+    \ifGPcolor
+      \def\colorrgb#1{\color[rgb]{#1}}%
+      \def\colorgray#1{\color[gray]{#1}}%
+      \expandafter\def\csname LTw\endcsname{\color{white}}%
+      \expandafter\def\csname LTb\endcsname{\color{black}}%
+      \expandafter\def\csname LTa\endcsname{\color{black}}%
+      \expandafter\def\csname LT0\endcsname{\color[rgb]{1,0,0}}%
+      \expandafter\def\csname LT1\endcsname{\color[rgb]{0,1,0}}%
+      \expandafter\def\csname LT2\endcsname{\color[rgb]{0,0,1}}%
+      \expandafter\def\csname LT3\endcsname{\color[rgb]{1,0,1}}%
+      \expandafter\def\csname LT4\endcsname{\color[rgb]{0,1,1}}%
+      \expandafter\def\csname LT5\endcsname{\color[rgb]{1,1,0}}%
+      \expandafter\def\csname LT6\endcsname{\color[rgb]{0,0,0}}%
+      \expandafter\def\csname LT7\endcsname{\color[rgb]{1,0.3,0}}%
+      \expandafter\def\csname LT8\endcsname{\color[rgb]{0.5,0.5,0.5}}%
+    \else
+      % gray
+      \def\colorrgb#1{\color{black}}%
+      \def\colorgray#1{\color[gray]{#1}}%
+      \expandafter\def\csname LTw\endcsname{\color{white}}%
+      \expandafter\def\csname LTb\endcsname{\color{black}}%
+      \expandafter\def\csname LTa\endcsname{\color{black}}%
+      \expandafter\def\csname LT0\endcsname{\color{black}}%
+      \expandafter\def\csname LT1\endcsname{\color{black}}%
+      \expandafter\def\csname LT2\endcsname{\color{black}}%
+      \expandafter\def\csname LT3\endcsname{\color{black}}%
+      \expandafter\def\csname LT4\endcsname{\color{black}}%
+      \expandafter\def\csname LT5\endcsname{\color{black}}%
+      \expandafter\def\csname LT6\endcsname{\color{black}}%
+      \expandafter\def\csname LT7\endcsname{\color{black}}%
+      \expandafter\def\csname LT8\endcsname{\color{black}}%
+    \fi
+  \fi
+    \setlength{\unitlength}{0.0500bp}%
+    \ifx\gptboxheight\undefined%
+      \newlength{\gptboxheight}%
+      \newlength{\gptboxwidth}%
+      \newsavebox{\gptboxtext}%
+    \fi%
+    \setlength{\fboxrule}{0.5pt}%
+    \setlength{\fboxsep}{1pt}%
+\begin{picture}(6122.00,4070.00)%
+    \gplgaddtomacro\gplbacktext{%
+      \csname LTb\endcsname%
+      \put(480,2238){\makebox(0,0)[r]{\strut{}$0$}}%
+      \put(480,2713){\makebox(0,0)[r]{\strut{}$1$}}%
+      \put(480,3187){\makebox(0,0)[r]{\strut{}$2$}}%
+      \put(480,3662){\makebox(0,0)[r]{\strut{}$3$}}%
+    }%
+    \gplgaddtomacro\gplfronttext{%
+      \csname LTb\endcsname%
+      \put(106,2950){\rotatebox{-270}{\makebox(0,0){\strut{}Time (s)}}}%
+      \put(3289,3882){\makebox(0,0){\strut{}Runge-Kutta 4, timestep \num{8e-5}}}%
+      \csname LTb\endcsname%
+      \put(744,3489){\makebox(0,0)[l]{\strut{}$N$-body solar system}}%
+      \csname LTb\endcsname%
+      \put(744,3269){\makebox(0,0)[l]{\strut{}fit $0.020 \cdot N(N-1) + 0.50$}}%
+    }%
+    \gplgaddtomacro\gplbacktext{%
+      \csname LTb\endcsname%
+      \put(480,1150){\makebox(0,0)[r]{\strut{}$1$}}%
+      \put(480,1781){\makebox(0,0)[r]{\strut{}$2$}}%
+      \put(1148,594){\makebox(0,0){\strut{}$2$}}%
+      \put(2219,594){\makebox(0,0){\strut{}$4$}}%
+      \put(3290,594){\makebox(0,0){\strut{}$6$}}%
+      \put(4361,594){\makebox(0,0){\strut{}$8$}}%
+      \put(5432,594){\makebox(0,0){\strut{}$10$}}%
+    }%
+    \gplgaddtomacro\gplfronttext{%
+      \csname LTb\endcsname%
+      \put(106,1525){\rotatebox{-270}{\makebox(0,0){\strut{}Time (s)}}}%
+      \put(3289,264){\makebox(0,0){\strut{}Bodies ($N$)}}%
+      \csname LTb\endcsname%
+      \put(744,2064){\makebox(0,0)[l]{\strut{}$N$ random initial conditions}}%
+      \csname LTb\endcsname%
+      \put(744,1844){\makebox(0,0)[l]{\strut{}fit $0.020 \cdot N(N-1) + 0.46$}}%
+    }%
+    \gplbacktext
+    \put(0,0){\includegraphics{../latex/plots/scalingellipses}}%
+    \gplfronttext
+  \end{picture}%
+\endgroup

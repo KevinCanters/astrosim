@@ -1,0 +1,9 @@
+GBS 30 1e-3 100 rrandom2.txt
+GBS 30 1e-3 100 rrandom3.txt
+GBS 30 1e-3 100 rrandom4.txt
+GBS 30 1e-3 100 rrandom5.txt
+GBS 30 1e-3 100 rrandom6.txt
+GBS 30 1e-3 100 rrandom7.txt
+GBS 30 1e-3 100 rrandom8.txt
+GBS 30 1e-3 100 rrandom9.txt
+GBS 30 1e-3 100 rrandom10.txt
